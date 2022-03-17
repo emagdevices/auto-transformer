@@ -11,6 +11,9 @@
 - Operating flux density $B_{ac}$
 - Temperature rise goal, $T_r=30^oC$
 - Window utilization, $K_u=0.4$
+- Core Material = $Silicon M6X$
+- Lamination Number = $EI-150$
+- Current Density $J$
 
 ### Constants 
 
