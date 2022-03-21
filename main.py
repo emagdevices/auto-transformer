@@ -1,72 +1,56 @@
-from tkinter import *
-import pandas as pd 
+# Load libraries
+import pandas as pd
+import numpy as np
 
-def task():
-    current_required = float(Itext.get())
-    J_required = float(Jtext.get())
-    Area_required = current_required / J_required
-    Area_required = Area_required * 100 # to convernt sqcm to sqmm
-
-    # Uploading Swg table for reference values 
-    swg_data = pd.read_csv('EMD - Sheet1.csv')
-    
-    required_swg = swg_data.iloc[(swg_data['Normal Conductor Area mm²'] - Area_required).abs().argsort()[:1]]
-    # print('SWG '+ required_swg['SWG'].to_string(index=False))
-    swg_final = required_swg['SWG'].to_string(index=False)
-    label_swg_result.delete(0, END)
-    label_swg_result.insert(0, f"{swg_final}")
-
-    selected_swg = required_swg['SWG'].to_string(index=False)
-    Area_of_selected_swg = required_swg['Normal Conductor Area mm²'].to_string(index=False)
-    # print('Normal Conductor Area of selected SWG : ' + Area_of_selected_swg + ' mm²')
-    label_Area_result.delete(0, END)
-    label_Area_result.insert(0, f"{Area_of_selected_swg} mm²")
+# Inputs and constants 
+Frequency = 47 # Hz
+Temperature_rise_goal = 30 # degree Celcius
+Output_power = 250 # watts
+Ouptut_voltage = 115 # volts
+Efficiency = 95 # %
+Input_voltage = 115 # volts
+Bobbin_thickness = 1.5 
+Regulation = 5 # percent
+K_f = 4.44
+K_u = 0.4
+B_ac = 1.6
+J = 250 # amps / cm^2
 
 
-
-import tkinter as tk 
-
-app = tk.Tk()
-app.title("SWG identifier")
-
-current_lable = Label(app, text='Current Required (I)')
-current_lable.grid(row=0, column=0, padx=5, pady=5, sticky=E)
-
-J_label = Label(app, text="Current Density required (J)")
-J_label.grid(row=1, column=0, padx=5, pady=5, sticky=E)
+Apparent_power = Output_power * (1/(0.01*Efficiency) + 1)
+print('Apparent power: ' + str(Apparent_power) + ' watts')
 
 
-Itext = StringVar()
-Itext.set('')
-current_box = Entry(app, textvariable=Itext)
-current_box.grid(row=0, column=1, padx=5, pady=5)
+Area_product = (Apparent_power*(10**4))/(K_f * K_u * B_ac * J * Frequency)
+print('Theoretical Area product: ' + str(Area_product) + ' cm^4') 
 
-Jtext = StringVar()
-Jtext.set('')
-J_box = Entry(app, textvariable=Jtext)
-J_box.grid(row=1, column=1, padx=5, pady=5)
 
-# 'Go' Button for getting the results
-AgoButton = Button(app, text='Go', command=task)
-AgoButton.grid(row=1, column=2, padx=5, pady=5)
+# import lamination data
+lamination_data = pd.read_csv('./EI-Laminations - Sheet1.csv')
+# import swg data 
+swg_data = pd.read_csv('EMD - Sheet1.csv')
 
-# label for for writing the swg version
-SWG_lable = Label(app, text="SWG version :")
-SWG_lable.grid(row=2, column=0, padx=5, pady=5, sticky=E)
 
-# label for writing the Normal Area for SWG
-Final_Area = Label(app, text="Normal Area for SWG")
-Final_Area.grid(row=3, column=0, padx=5, pady=5, sticky=E)
+""" Inpu Current
+    Primary Bare Wire Area 
+    Diameter of Primary Bare Wire with Insulation 
+"""
+# Input current I_input
+# Input_current = Apparent_power / (Input_voltage*Efficiency)
+Input_current = Apparent_power / (Input_voltage * 0.01* Efficiency)
+print('Input current ' + str(Input_current) + ' [amps]')
 
-# for inseting the our result in the box of area box
-lblAtext = StringVar()
-lblAtext.set('')
-label_Area_result = Entry(app, text=lblAtext)
-label_Area_result.grid(row=3, column=1, padx=5, pady=5, sticky=E)
+# Primary bare wire area A_wp
+# A_wp = Input_current / Current_density (J)
+A_wp = Input_current / J
+print('Priamry Bare Area: ' + str(A_wp*100)+ ' mm^2') # bare area in sqcm so convert it into sqmm
 
-lblswgtext = StringVar()
-lblswgtext.set('')
-label_swg_result = Entry(app, text=lblswgtext)
-label_swg_result.grid(row=2, column=1, padx=5, pady=5, sticky=E)
+A_wp_in_sqmm = A_wp * 100
 
-app.mainloop()
+# swg_data = pd.read_csv('EMD - Sheet1.csv')
+required_swg_primary = swg_data.iloc[(swg_data['Normal Conductor Area mm²'] - A_wp_in_sqmm).abs().argsort()[:1]]
+print('SWG: ' + str(required_swg_primary['SWG'].to_string(index=False)))
+
+# Diameter of primary wire with insulation enamel
+diameter_of_primary_wire_with_insulation = required_swg_primary['Medium Covering Max']
+print('Primary wire Diameter with enamel: ' + str(diameter_of_primary_wire_with_insulation.max()) + ' mm')
