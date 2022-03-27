@@ -1,56 +1,79 @@
-# Load libraries
+from tkinter import *
+import tkinter as tk 
 import pandas as pd
 import numpy as np
 
-# Inputs and constants 
-Frequency = 47 # Hz
-Temperature_rise_goal = 30 # degree Celcius
-Output_power = 250 # watts
-Ouptut_voltage = 115 # volts
-Efficiency = 95 # %
-Input_voltage = 115 # volts
-Bobbin_thickness = 1.5 
-Regulation = 5 # percent
-K_f = 4.44
-K_u = 0.4
-B_ac = 1.6
-J = 250 # amps / cm^2
+from task import Frequency
+
+def task():
+    # Frequency = 47 # Hz
+    # Temperature_rise_goal = 30 # degree Celcius
+    # Output_power = 250 # watts
+    # Efficiency = 95 # %
+    # Input_voltage = 115 # volts
+    # Ouptut_voltage = 115 # volts
+    # Regulation = 5 # in a scale of 100
+    # Bobbin_thickness = 1.5 
+    # K_f = 4.44
+    # K_u = 0.4
+    # B_ac = 1.6
+    # J = 250
+
+    # insulation_thickness = 0.2 #mm
+
+    Input_voltage = float(Input_Voltage_text.get())
+    Output_voltage = float(Output_voltage_text.get())
+    Output_power = float(Output_power_text)
+    Efficiency = float(Frequency_text.get())
+    pass 
 
 
-Apparent_power = Output_power * (1/(0.01*Efficiency) + 1)
-print('Apparent power: ' + str(Apparent_power) + ' watts')
 
-
-Area_product = (Apparent_power*(10**4))/(K_f * K_u * B_ac * J * Frequency)
-print('Theoretical Area product: ' + str(Area_product) + ' cm^4') 
-
-
-# import lamination data
-lamination_data = pd.read_csv('./EI-Laminations - Sheet1.csv')
-# import swg data 
-swg_data = pd.read_csv('EMD - Sheet1.csv')
-
-
-""" Inpu Current
-    Primary Bare Wire Area 
-    Diameter of Primary Bare Wire with Insulation 
 """
-# Input current I_input
-# Input_current = Apparent_power / (Input_voltage*Efficiency)
-Input_current = Apparent_power / (Input_voltage * 0.01* Efficiency)
-print('Input current ' + str(Input_current) + ' [amps]')
+UI code below 
+"""
+app = tk.Tk()
+app.title("Auto - Transformer")
 
-# Primary bare wire area A_wp
-# A_wp = Input_current / Current_density (J)
-A_wp = Input_current / J
-print('Priamry Bare Area: ' + str(A_wp*100)+ ' mm^2') # bare area in sqcm so convert it into sqmm
+input_Voltage_lable = Label(app, text='Input voltage (Vin))')
+input_Voltage_lable.grid(row=0, column=0, padx=5, pady=5, sticky=E)
 
-A_wp_in_sqmm = A_wp * 100
+Input_Voltage_text = StringVar()
+Input_Voltage_text.set('')
+input_Voltage_box = Entry(app, textvariable=Input_Voltage_text)
+input_Voltage_box.grid(row=0, column=1, padx=5, pady=5)
 
-# swg_data = pd.read_csv('EMD - Sheet1.csv')
-required_swg_primary = swg_data.iloc[(swg_data['Normal Conductor Area mm²'] - A_wp_in_sqmm).abs().argsort()[:1]]
-print('SWG: ' + str(required_swg_primary['SWG'].to_string(index=False)))
+output_voltage_lable = Label(app, text='Output voltage [volts]')
+output_voltage_lable.grid(row=1, column=0, padx=5, pady=5, sticky=E)
 
-# Diameter of primary wire with insulation enamel
-diameter_of_primary_wire_with_insulation = required_swg_primary['Medium Covering Max']
-print('Primary wire Diameter with enamel: ' + str(diameter_of_primary_wire_with_insulation.max()) + ' mm')
+Output_voltage_text = StringVar()
+Output_voltage_text.set('')
+Output_voltage_box = Entry(app, textvariable=Output_voltage_text)
+Output_voltage_box.grid(row=1, column=1, padx=5, pady=5)
+
+Output_power_lable = Label(app, text='Output Power [watts]')
+Output_power_lable.grid(row=2, column=0, padx=5, pady=5, sticky=E)
+
+Output_power_text = StringVar()
+Output_power_text.set('')
+Output_power_box = Entry(app, textvariable=Output_power_text)
+Output_power_box.grid(row=2, column=1, padx=5, pady=5)
+
+Efficiency_lable = Label(app, text='Efficiency [100%]')
+Efficiency_lable.grid(row=3, column=0, padx=5, pady=5, sticky=E)
+
+Efficiency_text = StringVar()
+Efficiency_text.set('')
+Efficiency_box = Entry(app, textvariable=Efficiency_text)
+Efficiency_box.grid(row=3, column=1, padx=5, pady=5)
+
+Frequency_lable = Label(app, text='Frequency [Hz]')
+Frequency_lable.grid(row=4, column=0, padx=5, pady=5, sticky=E)
+
+Frequency_text = StringVar()
+Frequency_text.set('')
+Frequency_box = Entry(app, textvariable=Frequency_text)
+Frequency_box.grid(row=4, column=1, padx=5, pady=5)
+
+app.mainloop()
+
