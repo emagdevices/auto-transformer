@@ -41,7 +41,8 @@ def task():
 
     lamination_data = pd.read_csv('EI-Laminations.csv')
 
-    Input_current = Apparent_power / (Input_voltage * 0.01* Efficiency)
+    # Input_current = Apparent_power / (Input_voltage * 0.01* Efficiency)
+    Input_current = Output_power / Input_voltage
 
     A_wp = Input_current / J
 
@@ -63,7 +64,16 @@ def task():
 
     diameter_of_wire_secondary_insulated = required_swg_secondary['Medium Covering Max'].max()                   # mm
 
-    A_ws = required_swg_secondary['Normal Conductor Area mm²'].max() / 100  
+    A_ws = required_swg_secondary['Normal Conductor Area mm²'].max() / 100  # cm^2
+
+    # Labels for swgs and bare area
+    primary_swg_version = required_swg_secondary['SWG'].max()
+    label_primary_swg_result.delete(0, END)
+    label_primary_swg_result.insert(0, f"{primary_swg_version}")
+
+    secondary_swg_version = required_swg_primary['SWG'].max()
+    label_secondary_swg_result.delete(0, END)
+    label_secondary_swg_result.insert(0, f"{secondary_swg_version}")
 
     stack_data = []
 
@@ -104,7 +114,7 @@ def task():
                 Np = Number_of_primary_turns 
 
                 Rate_of_Cu = 950 # Rs / Kg
-                Rate_of_Fe = 250 # Rs / Kg
+                Rate_of_Fe = 260 # Rs / Kg
 
                 a = 1.68 # coefficients for core loss
                 b = 1.86 # coefficients for core loss 
@@ -185,14 +195,15 @@ def task():
                 Cost = Wt_of_core_in_kg * Rate_of_Fe + Wt_of_Cu_in_kg * Rate_of_Cu 
 
                 table_data_stack_and_tongue = {
+                    'Temperature rise': Temperature_rise,
                     'Area Product cm²': present_Area_product,
                     # 'A': selected_lamination['A'].max(),
                     # 'B': selected_lamination['B'].max(),
                     # 'C': selected_lamination['C'].max(),
                     'Stack mm': stack,
-                    # 'Tongue mm': selected_lamination['Tongue'].max(),
-                    # 'wl mm': selected_lamination['Winding-length'].max(),
-                    # 'ww mm': selected_lamination['Winding-width'].max(),
+                    'Tongue mm': selected_lamination['Tongue'].max(),
+                    'wl mm': selected_lamination['Winding-length'].max(),
+                    'ww mm': selected_lamination['Winding-width'].max(),
                     # 'Total Built mm': Total_Built,
                     'Lamination': selected_lamination['Type'].max(),
                     'N_p': Number_of_primary_turns,
@@ -206,15 +217,28 @@ def task():
     
     df = pd.DataFrame(stack_data)
 
-    print(df[df['Cost'] == df['Cost'].min()][:1])
+    print(df[df['Cost'] == df['Cost'].min()])
 
     cost = df[df['Cost'] == df['Cost'].min()][:1]['Cost'].max()
+    cost = round(cost, 2)
     label_cost_result.delete(0, END)
     label_cost_result.insert(0, f"{cost }")
 
     stack = df[df['Cost'] == df['Cost'].min()][:1]['Stack mm'].max()
     label_stack_result.delete(0, END)
-    label_stack_result.insert(0, f"{stack }")
+    label_stack_result.insert(0, f"{stack}")
+
+    area_product = df[df['Cost'] == df['Cost'].min()][:1]['Area Product cm²'].max()
+    label_area_product_result.delete(0, END)
+    label_area_product_result.insert(0, f"{area_product}")
+
+    temperature = df[df['Cost'] == df['Cost'].min()][:1]['Temperature rise'].max()
+    label_temperature_rise_result.delete(0, END)
+    label_temperature_rise_result.insert(0, f"{temperature}")
+
+    lamination = df[df['Cost'] == df['Cost'].min()][:1]['Lamination'].max()
+    label_lamination_result.delete(0, END)
+    label_lamination_result.insert(0, f"{lamination}")
     pass  
 
 
@@ -311,6 +335,45 @@ lbl_stack_text.set('')
 label_stack_result = Entry(app, text=lbl_stack_text)
 label_stack_result.grid(row=7, column=1, padx=5, pady=5, sticky=E)
 
+area_product_lable = Label(app, text="Area Product cm²")
+area_product_lable.grid(row=6, column=2, padx=5, pady=5, sticky=E)
+
+lbl_area_product_text = StringVar()
+lbl_area_product_text.set('')
+label_area_product_result = Entry(app, text=lbl_area_product_text)
+label_area_product_result.grid(row=7, column=2, padx=5, pady=5, sticky=E)
+
+temperature_rise = Label(app, text="Temperature Rise goal")
+temperature_rise.grid(row=6, column=3, padx=5, pady=5, sticky=E)
+
+lbl_temperature_rise_text = StringVar()
+lbl_temperature_rise_text.set('')
+label_temperature_rise_result = Entry(app, text=lbl_temperature_rise_text)
+label_temperature_rise_result.grid(row=7, column=3, padx=5, pady=5, sticky=E)
+
+swg_required_primary_label = Label(app, text="Primary swg")
+swg_required_primary_label.grid(row=8, column=0, padx=5, pady=5, sticky=E)
+
+lbl_primary_swg = StringVar()
+lbl_primary_swg.set('')
+label_primary_swg_result = Entry(app, text=lbl_primary_swg)
+label_primary_swg_result.grid(row=9, column=0, padx=5, pady=5, sticky=E)
+
+swg_required_secondary_label = Label(app, text="Secondary swg")
+swg_required_secondary_label.grid(row=8, column=1, padx=5, pady=5, sticky=E)
+
+lbl_secondary_swg = StringVar()
+lbl_secondary_swg.set('')
+label_secondary_swg_result = Entry(app, text=lbl_secondary_swg)
+label_secondary_swg_result.grid(row=9, column=1, padx=5, pady=5, sticky=E)
+
+Lamination_label = Label(app, text="Lamination")
+Lamination_label.grid(row=8, column=3, padx=5, pady=5, sticky=E)
+
+lbl_lamination = StringVar()
+lbl_lamination.set('')
+label_lamination_result = Entry(app, text=lbl_lamination)
+label_lamination_result.grid(row=9, column=3, padx=5, pady=5, sticky=E)
 
 app.mainloop()
 
