@@ -123,6 +123,7 @@ def task():
                 Resistivity_Cu = 1.68 * 10**-6 # ohm cm
 
                 Iin = Input_current
+                
                 dw_p = diameter_of_primary_wire_with_insulation.max() 
 
                 Turns_per_layer_primary = wl / dw_p 
@@ -208,7 +209,15 @@ def task():
                     'Lamination': selected_lamination['Type'].max(),
                     'N_p': Number_of_primary_turns,
                     'N_s': Ns,
+                    'TPL P': Turns_per_layer_primary,
+                    'TPL S': Turns_per_layer_secondary,
+                    'Number of L P': Number_of_layer_primary,
+                    'Number of L S': Number_of_layer_secondary,
+                    'MTL P': MTL_primary,
+                    'MTL S': MTL_secondary,
                     # 'Tongue * Stack mm²':  selected_lamination['Tongue'].max() * stack,
+                    'Total Cu Cost': Wt_of_Cu_in_kg * Rate_of_Cu,
+                    'Total Fe Cost': Wt_of_core_in_kg * Rate_of_Fe,
                     'Core Area A_c cm²': A_c ,
                     # 'ww > Total Built': result,
                     'Cost': Cost,
@@ -239,6 +248,14 @@ def task():
     lamination = df[df['Cost'] == df['Cost'].min()][:1]['Lamination'].max()
     label_lamination_result.delete(0, END)
     label_lamination_result.insert(0, f"{lamination}")
+
+    total_copper_cost = df[df['Cost'] == df['Cost'].min()][:1]['Total Cu Cost'].max()
+    label_total_copper_cost_result.delete(0, END)
+    label_total_copper_cost_result.insert(0, f"{total_copper_cost}")
+
+    total_iron_cost = df[df['Cost'] == df['Cost'].min()][:1]['Total Fe Cost'].max()
+    label_total_iron_cost_result.delete(0, END)
+    label_total_iron_cost_result.insert(0, f"{total_iron_cost}")
     pass  
 
 
@@ -374,6 +391,22 @@ lbl_lamination = StringVar()
 lbl_lamination.set('')
 label_lamination_result = Entry(app, text=lbl_lamination)
 label_lamination_result.grid(row=9, column=3, padx=5, pady=5, sticky=E)
+
+total_copper_cost_label = Label(app, text="Total copper cost Rs")
+total_copper_cost_label.grid(row=10, column=0, padx=5, pady=5, sticky=E)
+
+lbl_total_copper_cost = StringVar()
+lbl_total_copper_cost.set('')
+label_total_copper_cost_result = Entry(app, text=lbl_total_copper_cost)
+label_total_copper_cost_result.grid(row=11, column=0, padx=5, pady=5, sticky=E)
+
+total_iron_cost_label = Label(app, text="Total Iron Cost Rs")
+total_iron_cost_label.grid(row=10, column=1, padx=5, pady=5, sticky=E)
+
+lbl_total_iron_cost = StringVar()
+lbl_total_iron_cost.set('')
+label_total_iron_cost_result = Entry(app, text=lbl_total_iron_cost)
+label_total_iron_cost_result.grid(row=11, column=1, padx=5, pady=5, sticky=E)
 
 app.mainloop()
 
