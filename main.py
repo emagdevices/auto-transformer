@@ -226,7 +226,7 @@ def task():
     
     df = pd.DataFrame(stack_data)
 
-    print(df[df['Cost'] == df['Cost'].min()])
+    # print(df[df['Cost'] == df['Cost'].min()])
 
     # Entry labes for updating the inputs
 
@@ -259,7 +259,99 @@ def task():
     label_total_iron_cost_result.delete(0, END)
     label_total_iron_cost_result.insert(0, f"{total_iron_cost}")
 
-    # for lamination 2 and 3
+    """
+    For getting the top 2 results with different laminations
+    """
+    top_3 = []
+
+    for i in df['Lamination'].unique():
+        d = df[df['Lamination'] == i]
+        d_min_cost = d[d['Cost']== d['Cost'].min()][:1] # d['Cost'].min()
+        # print(d_min_cost)
+        top_3.append({
+            'Lamination': d_min_cost['Lamination'].min(),
+            'Stack': d_min_cost['Stack mm'].min(),
+            'Tongue': d_min_cost['Tongue mm'].min(),
+            'wl': d_min_cost['wl mm'].min(),
+            'ww': d_min_cost['ww mm'].min(),
+            'Area Product cm²': d_min_cost['Area Product cm²'].min(),
+            'N_p': d_min_cost['N_p'].min(),
+            'N_s': d_min_cost['N_s'].min(),
+            'TPL P': d_min_cost['TPL P'].min(),
+            'TPL S': d_min_cost['TPL S'].min(),
+            'MTL P': d_min_cost['MTL P'].min(),
+            'MTL S': d_min_cost['MTL S'].min(),
+            'Temperature rise': d_min_cost['Temperature rise'].min(),
+            'Total Cu Cost': d_min_cost['Total Cu Cost'].min(),
+            'Total Fe Cost': d_min_cost['Total Fe Cost'].min(),
+            'Cost': d_min_cost['Cost'].min()
+        })
+
+    top_3 = pd.DataFrame(top_3)
+    
+    top_3_sorted = top_3.sort_values(by=['Cost'])[:3]
+
+    print(top_3_sorted)
+
+    # for lamination 2 
+    cost2 = top_3_sorted['Cost'][1:2].max()
+    cost2 = round(cost2, 2)
+    label_cost_result2.delete(0, END)
+    label_cost_result2.insert(0, f"{cost2 }")
+
+    stack2 = top_3_sorted['Stack'][1:2].max()
+    label_stack_result2.delete(0, END)
+    label_stack_result2.insert(0, f"{stack2}")
+
+    area_product2 = top_3_sorted['Area Product cm²'][1:2].max()
+    label_area_product_result2.delete(0, END)
+    label_area_product_result2.insert(0, f"{area_product2}")
+
+    temperature2 = top_3_sorted['Temperature rise'][1:2].max()
+    label_temperature_rise_result2.delete(0, END)
+    label_temperature_rise_result2.insert(0, f"{temperature2}")
+
+    lamination2 = top_3_sorted['Lamination'][1:2].max()
+    label_lamination_result2.delete(0, END)
+    label_lamination_result2.insert(0, f"{lamination2}")
+
+    total_copper_cost2 = top_3_sorted['Total Cu Cost'][1:2].max()
+    label_total_copper_cost_result2.delete(0, END)
+    label_total_copper_cost_result2.insert(0, f"{total_copper_cost2}")
+
+    total_iron_cost2 = top_3_sorted['Total Fe Cost'][1:2].max()
+    label_total_iron_cost_result2.delete(0, END)
+    label_total_iron_cost_result2.insert(0, f"{total_iron_cost2}")
+
+    # for lamination 3
+    cost3 = top_3_sorted['Cost'][2:3].max()
+    cost3 = round(cost3, 2)
+    label_cost_result3.delete(0, END)
+    label_cost_result3.insert(0, f"{cost3 }")
+
+    stack3 = top_3_sorted['Stack'][2:3].max()
+    label_stack_result3.delete(0, END)
+    label_stack_result3.insert(0, f"{stack3}")
+
+    area_product3 = top_3_sorted['Area Product cm²'][2:3].max()
+    label_area_product_result3.delete(0, END)
+    label_area_product_result3.insert(0, f"{area_product3}")
+
+    temperature3 = top_3_sorted['Temperature rise'][2:3].max()
+    label_temperature_rise_result3.delete(0, END)
+    label_temperature_rise_result3.insert(0, f"{temperature3}")
+
+    lamination3 = top_3_sorted['Lamination'][2:3].max()
+    label_lamination_result3.delete(0, END)
+    label_lamination_result3.insert(0, f"{lamination3}")
+
+    total_copper_cost3 = top_3_sorted['Total Cu Cost'][2:3].max()
+    label_total_copper_cost_result3.delete(0, END)
+    label_total_copper_cost_result3.insert(0, f"{total_copper_cost3}")
+
+    total_iron_cost3 = top_3_sorted['Total Fe Cost'][2:3].max()
+    label_total_iron_cost_result3.delete(0, END)
+    label_total_iron_cost_result3.insert(0, f"{total_iron_cost3}")
 
     pass  
 
@@ -475,61 +567,61 @@ label_cost_result2.grid(row=23, column=3, padx=5, pady=5, sticky=E)
 
 # lamination 3
 
-Lamination_label = Label(app, text="Lamination-III")
-Lamination_label.grid(row=30, column=0, padx=5, pady=5, sticky=E)
+Lamination_label3 = Label(app, text="Lamination-III")
+Lamination_label3.grid(row=30, column=0, padx=5, pady=5, sticky=E)
 
-lbl_lamination = StringVar()
-lbl_lamination.set('')
-label_lamination_result = Entry(app, text=lbl_lamination)
-label_lamination_result.grid(row=31, column=0, padx=5, pady=5, sticky=E)
+lbl_lamination3 = StringVar()
+lbl_lamination3.set('')
+label_lamination_result3 = Entry(app, text=lbl_lamination3)
+label_lamination_result3.grid(row=31, column=0, padx=5, pady=5, sticky=E)
 
-stack_lable = Label(app, text="Stack mm")
-stack_lable.grid(row=30, column=2, padx=5, pady=5, sticky=E)
+stack_lable3 = Label(app, text="Stack mm")
+stack_lable3.grid(row=30, column=2, padx=5, pady=5, sticky=E)
 
-lbl_stack_text = StringVar()
-lbl_stack_text.set('')
-label_stack_result = Entry(app, text=lbl_stack_text)
-label_stack_result.grid(row=31, column=2, padx=5, pady=5, sticky=E)
+lbl_stack_text3 = StringVar()
+lbl_stack_text3.set('')
+label_stack_result3 = Entry(app, text=lbl_stack_text3)
+label_stack_result3.grid(row=31, column=2, padx=5, pady=5, sticky=E)
 
-area_product_lable = Label(app, text="Area Product cm²")
-area_product_lable.grid(row=30, column=1, padx=5, pady=5, sticky=E)
+area_product_lable3 = Label(app, text="Area Product cm²")
+area_product_lable3.grid(row=30, column=1, padx=5, pady=5, sticky=E)
 
-lbl_area_product_text = StringVar()
-lbl_area_product_text.set('')
-label_area_product_result = Entry(app, text=lbl_area_product_text)
-label_area_product_result.grid(row=31, column=1, padx=5, pady=5, sticky=E)
+lbl_area_product_text3 = StringVar()
+lbl_area_product_text3.set('')
+label_area_product_result3 = Entry(app, text=lbl_area_product_text3)
+label_area_product_result3.grid(row=31, column=1, padx=5, pady=5, sticky=E)
 
-temperature_rise = Label(app, text="Temperature Rise goal")
-temperature_rise.grid(row=30, column=3, padx=5, pady=5, sticky=E)
+temperature_rise3 = Label(app, text="Temperature Rise goal")
+temperature_rise3.grid(row=30, column=3, padx=5, pady=5, sticky=E)
 
-lbl_temperature_rise_text = StringVar()
-lbl_temperature_rise_text.set('')
-label_temperature_rise_result = Entry(app, text=lbl_temperature_rise_text)
-label_temperature_rise_result.grid(row=31, column=3, padx=5, pady=5, sticky=E)
+lbl_temperature_rise_text3 = StringVar()
+lbl_temperature_rise_text3.set('')
+label_temperature_rise_result3 = Entry(app, text=lbl_temperature_rise_text3)
+label_temperature_rise_result3.grid(row=31, column=3, padx=5, pady=5, sticky=E)
 
-total_copper_cost_label = Label(app, text="Total copper cost Rs")
-total_copper_cost_label.grid(row=32, column=2, padx=5, pady=5, sticky=E)
+total_copper_cost_label3 = Label(app, text="Total copper cost Rs")
+total_copper_cost_label3.grid(row=32, column=2, padx=5, pady=5, sticky=E)
 
-lbl_total_copper_cost = StringVar()
-lbl_total_copper_cost.set('')
-label_total_copper_cost_result = Entry(app, text=lbl_total_copper_cost)
-label_total_copper_cost_result.grid(row=33, column=2, padx=5, pady=5, sticky=E)
+lbl_total_copper_cost3 = StringVar()
+lbl_total_copper_cost3.set('')
+label_total_copper_cost_result3 = Entry(app, text=lbl_total_copper_cost3)
+label_total_copper_cost_result3.grid(row=33, column=2, padx=5, pady=5, sticky=E)
 
-total_iron_cost_label = Label(app, text="Total Iron Cost Rs")
-total_iron_cost_label.grid(row=32, column=1, padx=5, pady=5, sticky=E)
+total_iron_cost_label3 = Label(app, text="Total Iron Cost Rs")
+total_iron_cost_label3.grid(row=32, column=1, padx=5, pady=5, sticky=E)
 
-lbl_total_iron_cost = StringVar()
-lbl_total_iron_cost.set('')
-label_total_iron_cost_result = Entry(app, text=lbl_total_iron_cost)
-label_total_iron_cost_result.grid(row=33, column=1, padx=5, pady=5, sticky=E)
+lbl_total_iron_cost3 = StringVar()
+lbl_total_iron_cost3.set('')
+label_total_iron_cost_result3 = Entry(app, text=lbl_total_iron_cost3)
+label_total_iron_cost_result3.grid(row=33, column=1, padx=5, pady=5, sticky=E)
 
-Cost_lable = Label(app, text="Total Cost in Rs")
-Cost_lable.grid(row=32, column=3, padx=5, pady=5, sticky=E)
+Cost_lable3 = Label(app, text="Total Cost in Rs")
+Cost_lable3.grid(row=32, column=3, padx=5, pady=5, sticky=E)
 
-lbl_cost_text = StringVar()
-lbl_cost_text.set('')
-label_cost_result = Entry(app, text=lbl_cost_text)
-label_cost_result.grid(row=33, column=3, padx=5, pady=5, sticky=E)
+lbl_cost_text3 = StringVar()
+lbl_cost_text3.set('')
+label_cost_result3 = Entry(app, text=lbl_cost_text3)
+label_cost_result3.grid(row=33, column=3, padx=5, pady=5, sticky=E)
 
 
 app.mainloop()
