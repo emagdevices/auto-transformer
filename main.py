@@ -1,39 +1,72 @@
+from decimal import ROUND_DOWN, ROUND_UP
 from tkinter import *
 import tkinter as tk 
 import pandas as pd
 import numpy as np
-
+import math 
 # from task import Frequency
 # print(Frequency)
 
+OPTIONS = [
+"Copper",
+"Aluminium"
+] #etc
+
+
+
 def task():
-    # Frequency = 47 # Hz
-    # Temperature_rise_goal = 30 # degree Celcius
-    # Output_power = 250 # watts
-    # Efficiency = 95 # %
-    # Input_voltage = 115 # volts
-    # Ouptut_voltage = 115 # volts
-    # Regulation = 5 # in a scale of 100
-    # Bobbin_thickness = 1.5 
-    # K_f = 4.44
-    # K_u = 0.4
-    # B_ac = 1.6
-    # J = 250
-
-    # insulation_thickness = 0.2 #mm
-
-    Input_voltage = float(Input_Voltage_text.get())
-    Ouptut_voltage = float(Output_voltage_text.get())
-    Output_power = float(Output_power_text.get())
-    Efficiency = float(Efficiency_text.get())
-    Frequency = float(Frequency_text.get())
-    B_ac = float(Flux_density_text.get())
-    Regulation = float(Regulation_text.get())
-    J = float(Current_density_text.get())
+    Frequency = 50 # Hz
+    Temperature_rise_goal = 200 # degree Celcius
+    Output_power = 250 # watts
+    Efficiency = 96 # %
+    Input_voltage = 230 # volts
+    Ouptut_voltage = 230 # volts
+    Regulation = 4 # in a scale of 100
+    Bobbin_thickness = 1.5 
     K_f = 4.44
     K_u = 0.4
-    Bobbin_thickness = 1.5 
+    B_ac = 1.35
+    J = 250
     insulation_thickness = 0.2 #mm
+
+    # Input_voltage = float(Input_Voltage_text.get())
+    # Ouptut_voltage = float(Output_voltage_text.get())
+    # Output_power = float(Output_power_text.get())
+    # Efficiency = float(Efficiency_text.get())
+    # Frequency = float(Frequency_text.get())
+    # B_ac = float(Flux_density_text.get())
+    # Regulation = float(Regulation_text.get())
+    # J = float(Current_density_text.get())
+    # K_f = 4.44
+    # K_u = 0.4
+    # Bobbin_thickness = 1.5 
+    # insulation_thickness = 0.2 #mm
+
+    # Rate_of_Cu = float(Rate_of_Cu_text.get())
+    # Rate_of_Fe = float(Rate_of_Fe_text.get())
+
+    # Temperature_rise = float(Temperature_rise_goal_text.get())
+
+    #pi
+    pi = np.pi 
+
+    a = 1.68 # coefficients for core loss
+    b = 1.86 # coefficients for core loss 
+
+    # Resistivity of Cu 
+    # Resistivity_Cu = 1.68 * 10**-6 # ohm cm
+
+    if conductor.get() == "Copper":
+        Resistivity_conductor = 1.68 * 10**-6 # ohm cm
+    if conductor.get() == "Aluminium":
+        Resistivity_conductor = 2.65 * 10**-6 # ohm cm
+
+    Resistivity_Cu = Resistivity_conductor
+
+    Rate_of_Cu = 950 # Rs / Kg
+    Rate_of_Fe = 250 # Rs / Kg
+    
+    
 
     Apparent_power = Output_power * (1/(0.01*Efficiency) + 1)
 
@@ -50,7 +83,9 @@ def task():
 
     swg_data = pd.read_csv('EMD - Sheet1.csv') # select the swg the data 
 
-    required_swg_primary = swg_data.iloc[(swg_data['Normal Conductor Area mm²'] - A_wp_in_sqmm).abs().argsort()[:1]]
+    higher_data = swg_data[A_wp_in_sqmm < swg_data['Normal Conductor Area mm²']]
+
+    required_swg_primary = higher_data.iloc[(higher_data['Normal Conductor Area mm²'] - A_wp_in_sqmm).abs().argsort()[:1]]
 
     diameter_of_primary_wire_with_insulation = required_swg_primary['Medium Covering Max']
 
@@ -60,7 +95,9 @@ def task():
 
     A_ws = Secondary_current / J # cm^2
 
-    required_swg_secondary = swg_data.iloc[(swg_data['Normal Conductor Area mm²'] - A_ws * 100).abs().argsort()[:1]] 
+    higher_data_swg = swg_data[A_ws * 100 < swg_data['Normal Conductor Area mm²']]
+
+    required_swg_secondary = higher_data_swg.iloc[(higher_data_swg['Normal Conductor Area mm²'] - A_ws * 100).abs().argsort()[:1]] 
 
     diameter_of_wire_secondary_insulated = required_swg_secondary['Medium Covering Max'].max()                   # mm
 
@@ -113,24 +150,16 @@ def task():
 
                 Np = Number_of_primary_turns 
 
-                Rate_of_Cu = 950 # Rs / Kg
-                Rate_of_Fe = 260 # Rs / Kg
-
-                a = 1.68 # coefficients for core loss
-                b = 1.86 # coefficients for core loss 
-
-                # Resistivity of Cu 
-                Resistivity_Cu = 1.68 * 10**-6 # ohm cm
 
                 Iin = Input_current
                 
                 dw_p = diameter_of_primary_wire_with_insulation.max() 
 
-                Turns_per_layer_primary = wl / dw_p 
+                Turns_per_layer_primary = math.floor( wl / dw_p) 
 
                 Number_of_layer_primary = Np / Turns_per_layer_primary
 
-                Built_primary = ( Bobbin_thickness + Number_of_layer_primary * dw_p )                                      # mm
+                Built_primary = ( Bobbin_thickness + math.ceil(Number_of_layer_primary) * dw_p ) * 1.2                                      # mm
 
                 # Built_primary = ( Bobbin_thickness + Np * dw_p ) / 10 
 
@@ -146,11 +175,11 @@ def task():
 
                 Ns = round(Ns)
 
-                Turns_per_layer_secondary = wl / diameter_of_wire_secondary_insulated 
+                Turns_per_layer_secondary = math.floor(wl / diameter_of_wire_secondary_insulated )
 
-                Number_of_layer_secondary = Ns /  Turns_per_layer_secondary  
+                Number_of_layer_secondary = math.floor(Ns /  Turns_per_layer_secondary)  
 
-                Built_secondary = Number_of_layer_secondary * diameter_of_wire_secondary_insulated + insulation_thickness     # mm
+                Built_secondary = ((Number_of_layer_secondary) * diameter_of_wire_secondary_insulated + insulation_thickness  ) * 1.2   # mm
 
                 Total_Built = Built_primary + Built_secondary
 
@@ -182,47 +211,71 @@ def task():
 
                 Total_surface_area = 2 * ( B * C + B * (stack + 2 * Total_Built) + C * (stack + 2 * Total_Built) ) / 100 #cm2
 
+                # Cu_surface area = pi * built* wl + (pi/2)* built^2 - (pi/2)*tongue^2
+
+                Cu_surface_area = pi * Total_Built * wl + (pi/2)* Total_Built**2 - (pi/2)* tongue**2
+
+                # Core_surface_area = 2 * ( (B*C - 2*ww*wl)+ stack*(B+C) )
+
+                Core_surface_area = 2 * ( (B * C - 2 * ww * wl) + stack * (B+C) )
+
+                # psi copper
+
+                psi_copper = Total_Cu_loss / Cu_surface_area
+
+                # psi core
+
+                psi_core = Core_loss / Core_surface_area 
+
+                # temperature rise in Cu
+
+                Temperature_rise_Cu = 450 * psi_copper**0.826
+
+                # temperature rise in Core
+
+                Temperature_rise_Fe = 450 * psi_core**0.826
+
                 psi = Total_loss / Total_surface_area 
 
                 Temperature_rise = 450 * psi**0.826 
 
-                if(ww > Total_Built):
-                    result = ('Greater')
-                else:
-                    result = ('Lesser') 
+                if(ww * 0.9 > Total_Built):
+                    # result = ('Greater')
+                    Wt_of_Cu_in_kg = (Length_primary * required_swg_primary['Conductor Weight for 1000m/Kg'].max() + Length_secondary * required_swg_secondary['Conductor Weight for 1000m/Kg'].max() ) / 10**5
 
-                Wt_of_Cu_in_kg = (Length_primary * required_swg_primary['Conductor Weight for 1000m/Kg'].max() + Length_secondary * required_swg_secondary['Conductor Weight for 1000m/Kg'].max() ) / 10**5
+                    Cost = Wt_of_core_in_kg * Rate_of_Fe + Wt_of_Cu_in_kg * Rate_of_Cu 
 
-                Cost = Wt_of_core_in_kg * Rate_of_Fe + Wt_of_Cu_in_kg * Rate_of_Cu 
-
-                table_data_stack_and_tongue = {
-                    'Temperature rise': Temperature_rise,
-                    'Area Product cm²': present_Area_product,
-                    # 'A': selected_lamination['A'].max(),
-                    # 'B': selected_lamination['B'].max(),
-                    # 'C': selected_lamination['C'].max(),
-                    'Stack mm': stack,
-                    'Tongue mm': selected_lamination['Tongue'].max(),
-                    'wl mm': selected_lamination['Winding-length'].max(),
-                    'ww mm': selected_lamination['Winding-width'].max(),
-                    # 'Total Built mm': Total_Built,
-                    'Lamination': selected_lamination['Type'].max(),
-                    'N_p': Number_of_primary_turns,
-                    'N_s': Ns,
-                    'TPL P': Turns_per_layer_primary,
-                    'TPL S': Turns_per_layer_secondary,
-                    'Number of L P': Number_of_layer_primary,
-                    'Number of L S': Number_of_layer_secondary,
-                    'MTL P': MTL_primary,
-                    'MTL S': MTL_secondary,
-                    # 'Tongue * Stack mm²':  selected_lamination['Tongue'].max() * stack,
-                    'Total Cu Cost': Wt_of_Cu_in_kg * Rate_of_Cu,
-                    'Total Fe Cost': Wt_of_core_in_kg * Rate_of_Fe,
-                    'Core Area A_c cm²': A_c ,
-                    # 'ww > Total Built': result,
-                    'Cost': Cost,
-                }
-                stack_data.append(table_data_stack_and_tongue)
+                    table_data_stack_and_tongue = {
+                        'Temperature rise': Temperature_rise,
+                        'Area Product cm²': present_Area_product,
+                        # 'A': selected_lamination['A'].max(),
+                        # 'B': selected_lamination['B'].max(),
+                        # 'C': selected_lamination['C'].max(),
+                        'Stack mm': stack,
+                        'Tongue mm': selected_lamination['Tongue'].max(),
+                        'wl mm': selected_lamination['Winding-length'].max(),
+                        'ww mm': selected_lamination['Winding-width'].max(),
+                        'Total Built': Total_Built,
+                        # 'Total Built mm': Total_Built,
+                        'Lamination': selected_lamination['Type'].max(),
+                        'N_p': Number_of_primary_turns,
+                        'N_s': Ns,
+                        'TPL P': Turns_per_layer_primary,
+                        'TPL S': Turns_per_layer_secondary,
+                        'Number of L P': Number_of_layer_primary,
+                        'Number of L S': Number_of_layer_secondary,
+                        'MTL P': MTL_primary,
+                        'MTL S': MTL_secondary,
+                        # 'Tongue * Stack mm²':  selected_lamination['Tongue'].max() * stack,
+                        'Temperature rise Cu': Temperature_rise_Cu,
+                        'Temperature rise Fe': Temperature_rise_Fe,
+                        'Total Cu Cost': Wt_of_Cu_in_kg * Rate_of_Cu,
+                        'Total Fe Cost': Wt_of_core_in_kg * Rate_of_Fe,
+                        'Core Area A_c cm²': A_c ,
+                        # 'ww > Total Built': result,
+                        'Cost': Cost,
+                    }
+                    stack_data.append(table_data_stack_and_tongue)
     
     df = pd.DataFrame(stack_data)
 
@@ -230,34 +283,34 @@ def task():
 
     # Entry labes for updating the inputs
 
-    cost = df[df['Cost'] == df['Cost'].min()][:1]['Cost'].max()
-    cost = round(cost, 2)
-    label_cost_result.delete(0, END)
-    label_cost_result.insert(0, f"{cost }")
+    # cost = df[df['Cost'] == df['Cost'].min()][:1]['Cost'].max()
+    # cost = round(cost, 2)
+    # label_cost_result.delete(0, END)
+    # label_cost_result.insert(0, f"{cost }")
 
-    stack = df[df['Cost'] == df['Cost'].min()][:1]['Stack mm'].max()
-    label_stack_result.delete(0, END)
-    label_stack_result.insert(0, f"{stack}")
+    # stack = df[df['Cost'] == df['Cost'].min()][:1]['Stack mm'].max()
+    # label_stack_result.delete(0, END)
+    # label_stack_result.insert(0, f"{stack}")
 
-    area_product = df[df['Cost'] == df['Cost'].min()][:1]['Area Product cm²'].max()
-    label_area_product_result.delete(0, END)
-    label_area_product_result.insert(0, f"{area_product}")
+    # area_product = df[df['Cost'] == df['Cost'].min()][:1]['Area Product cm²'].max()
+    # label_area_product_result.delete(0, END)
+    # label_area_product_result.insert(0, f"{area_product}")
 
-    temperature = df[df['Cost'] == df['Cost'].min()][:1]['Temperature rise'].max()
-    label_temperature_rise_result.delete(0, END)
-    label_temperature_rise_result.insert(0, f"{temperature}")
+    # temperature = df[df['Cost'] == df['Cost'].min()][:1]['Temperature rise'].max()
+    # label_temperature_rise_result.delete(0, END)
+    # label_temperature_rise_result.insert(0, f"{temperature}")
 
-    lamination = df[df['Cost'] == df['Cost'].min()][:1]['Lamination'].max()
-    label_lamination_result.delete(0, END)
-    label_lamination_result.insert(0, f"{lamination}")
+    # lamination = df[df['Cost'] == df['Cost'].min()][:1]['Lamination'].max()
+    # label_lamination_result.delete(0, END)
+    # label_lamination_result.insert(0, f"{lamination}")
 
-    total_copper_cost = df[df['Cost'] == df['Cost'].min()][:1]['Total Cu Cost'].max()
-    label_total_copper_cost_result.delete(0, END)
-    label_total_copper_cost_result.insert(0, f"{total_copper_cost}")
+    # total_copper_cost = df[df['Cost'] == df['Cost'].min()][:1]['Total Cu Cost'].max()
+    # label_total_copper_cost_result.delete(0, END)
+    # label_total_copper_cost_result.insert(0, f"{total_copper_cost}")
 
-    total_iron_cost = df[df['Cost'] == df['Cost'].min()][:1]['Total Fe Cost'].max()
-    label_total_iron_cost_result.delete(0, END)
-    label_total_iron_cost_result.insert(0, f"{total_iron_cost}")
+    # total_iron_cost = df[df['Cost'] == df['Cost'].min()][:1]['Total Fe Cost'].max()
+    # label_total_iron_cost_result.delete(0, END)
+    # label_total_iron_cost_result.insert(0, f"{total_iron_cost}")
 
     """
     For getting the top 2 results with different laminations
@@ -274,6 +327,7 @@ def task():
             'Tongue': d_min_cost['Tongue mm'].min(),
             'wl': d_min_cost['wl mm'].min(),
             'ww': d_min_cost['ww mm'].min(),
+            'Total Built': d_min_cost['Total Built'].min(),
             'Area Product cm²': d_min_cost['Area Product cm²'].min(),
             'N_p': d_min_cost['N_p'].min(),
             'N_s': d_min_cost['N_s'].min(),
@@ -281,6 +335,8 @@ def task():
             'TPL S': d_min_cost['TPL S'].min(),
             'MTL P': d_min_cost['MTL P'].min(),
             'MTL S': d_min_cost['MTL S'].min(),
+            # 'Temperature rise Cu': d_min_cost['Temperature rise Cu'].min(),
+            # 'Temperature rise Fe': d_min_cost['Temperature rise Fe'],
             'Temperature rise': d_min_cost['Temperature rise'].min(),
             'Total Cu Cost': d_min_cost['Total Cu Cost'].min(),
             'Total Fe Cost': d_min_cost['Total Fe Cost'].min(),
@@ -292,6 +348,36 @@ def task():
     top_3_sorted = top_3.sort_values(by=['Cost'])[:3]
 
     print(top_3_sorted)
+
+    # for lamination 1
+    cost = top_3_sorted['Cost'][:1].max()
+    cost = round(cost, 2)
+    label_cost_result.delete(0, END)
+    label_cost_result.insert(0, f"{cost }")
+
+    stack = top_3_sorted['Stack'][:1].max()
+    label_stack_result.delete(0, END)
+    label_stack_result.insert(0, f"{stack}")
+
+    area_product = top_3_sorted['Area Product cm²'][:1].max()
+    label_area_product_result.delete(0, END)
+    label_area_product_result.insert(0, f"{area_product}")
+
+    temperature = top_3_sorted['Temperature rise'][:1].max()
+    label_temperature_rise_result.delete(0, END)
+    label_temperature_rise_result.insert(0, f"{temperature}")
+
+    lamination = top_3_sorted['Lamination'][:1].max()
+    label_lamination_result.delete(0, END)
+    label_lamination_result.insert(0, f"{lamination}")
+
+    total_copper_cost = top_3_sorted['Total Cu Cost'][:1].max()
+    label_total_copper_cost_result.delete(0, END)
+    label_total_copper_cost_result.insert(0, f"{total_copper_cost}")
+
+    total_iron_cost = top_3_sorted['Total Fe Cost'][:1].max()
+    label_total_iron_cost_result.delete(0, END)
+    label_total_iron_cost_result.insert(0, f"{total_iron_cost}")
 
     # for lamination 2 
     cost2 = top_3_sorted['Cost'][1:2].max()
@@ -363,6 +449,14 @@ UI code below
 app = tk.Tk()
 app.title("Auto - Transformer")
 
+conductor = StringVar(app)
+conductor.set(OPTIONS[0]) # default value
+
+Conductor_option_lable = Label(app, text='Select Conductor')
+Conductor_option_lable.grid(row=2, column=4, padx=5, pady=5, sticky=E)
+Conductor_option = OptionMenu(app, conductor, *OPTIONS)
+Conductor_option.grid(row=2, column=5, padx=5, pady=5, sticky=E)
+
 input_Voltage_lable = Label(app, text='Input voltage (Vin))')
 input_Voltage_lable.grid(row=0, column=0, padx=5, pady=5, sticky=E)
 
@@ -427,9 +521,33 @@ Current_density_text.set('')
 Current_density_box = Entry(app, textvariable=Current_density_text)
 Current_density_box.grid(row=1, column=3, padx=5, pady=5)
 
+Rate_of_Cu_lable = Label(app, text='Rate of Cu [950 Rs/Kg ]')
+Rate_of_Cu_lable.grid(row=0, column=4, padx=5, pady=5, sticky=E)
+
+Rate_of_Cu_text = StringVar()
+Rate_of_Cu_text.set('')
+Rate_of_Cu_box = Entry(app, textvariable=Rate_of_Cu_text)
+Rate_of_Cu_box.grid(row=0, column=5, padx=5, pady=5)
+
+Rate_of_Fe_lable = Label(app, text='Rate of Fe [250 Rs/Kg ]')
+Rate_of_Fe_lable.grid(row=1, column=4, padx=5, pady=5, sticky=E)
+
+Rate_of_Fe_text = StringVar()
+Rate_of_Fe_text.set('')
+Rate_of_Fe_box = Entry(app, textvariable=Rate_of_Fe_text)
+Rate_of_Fe_box.grid(row=1, column=5, padx=5, pady=5)
+
+Temperature_rise_goal_lable = Label(app, text='Temperature Rise Goal ')
+Temperature_rise_goal_lable.grid(row=4, column=2, padx=5, pady=5, sticky=E)
+
+Temperature_rise_goal_text = StringVar()
+Temperature_rise_goal_text.set('')
+Temperature_rise_goal_box = Entry(app, textvariable=Temperature_rise_goal_text)
+Temperature_rise_goal_box.grid(row=4, column=3, padx=5, pady=5)
+
 # 'Go' Button for getting the results
 AgoButton = Button(app, text='Calculate', command=task)
-AgoButton.grid(row=5, column=3, padx=5, pady=5, sticky=W)
+AgoButton.grid(row=5, column=5, padx=5, pady=5, sticky=W)
 
 # Calculated results 
 
