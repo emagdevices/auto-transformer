@@ -241,9 +241,9 @@ def task():
 
                 # Leakage inductance
 
-                # leakage_inductance_conductor = (1.2 * MTL_primary * Np**2 / wl) * 
+                # leakage_inductance_conductor = (1.2 * MTL_primary * Np**2 / wl) * (ILI + Cover + (Built_primary + Built_secondary))* 10**-8  # henry(H)
 
-                # lekage_inductance_core = 
+                # lekage_inductance_core = (1.2 * MTL_secondary * Ns**2 / wl) * 
 
                 if(ww * 0.9 > Total_Built):
                     # result = ('Greater')
