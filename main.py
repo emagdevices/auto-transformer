@@ -239,6 +239,12 @@ def task():
 
                 Temperature_rise = 450 * psi**0.826 
 
+                # Leakage inductance
+
+                # leakage_inductance_conductor = (1.2 * MTL_primary * Np**2 / wl) * 
+
+                # lekage_inductance_core = 
+
                 if(ww * 0.9 > Total_Built):
                     # result = ('Greater')
                     Wt_of_Cu_in_kg = (Length_primary * required_swg_primary['Conductor Weight for 1000m/Kg'].max() + Length_secondary * required_swg_secondary['Conductor Weight for 1000m/Kg'].max() ) / 10**5
