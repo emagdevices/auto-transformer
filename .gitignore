@@ -7,3 +7,5 @@
 gui_example.py 
 
 /myvenv
+
+.ipynb_checkpoints/
