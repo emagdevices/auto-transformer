@@ -15,33 +15,33 @@ OPTIONS = [
 
 
 def task():
-    # Frequency = 50 # Hz
-    # Temperature_rise_goal = 80 # degree Celcius
-    # Output_power = 2000 # watts
-    # Efficiency = 96 # %
-    # Input_voltage = 230 # volts
-    # Ouptut_voltage = 230 # volts
-    # Regulation = 4 # in a scale of 100
-    # Bobbin_thickness = 1.5 
-    # K_f = 4.44
-    # K_u = 0.4
-    # B_ac = 1.35
-    # J = 250
-    # insulation_thickness = 0.2 #mm
-
-    Input_voltage = float(Input_Voltage_text.get())
-    Ouptut_voltage = float(Output_voltage_text.get())
-    Output_power = float(Output_power_text.get())
-    Efficiency = float(Efficiency_text.get())
-    Frequency = float(Frequency_text.get())
-    B_ac = float(Flux_density_text.get())
-    Regulation = float(Regulation_text.get())
-    J = float(Current_density_text.get())
-    Temperature_rise = float(Temperature_rise_goal_text.get())
+    Frequency = 50 # Hz
+    Temperature_rise_goal = 80 # degree Celcius
+    Output_power = 2000 # watts
+    Efficiency = 96 # %
+    Input_voltage = 230 # volts
+    Ouptut_voltage = 230 # volts
+    Regulation = 4 # in a scale of 100
+    Bobbin_thickness = 1.5 
     K_f = 4.44
     K_u = 0.4
-    Bobbin_thickness = 1.5 
+    B_ac = 1.35
+    J = 250
     insulation_thickness = 0.2 #mm
+
+    # Input_voltage = float(Input_Voltage_text.get())
+    # Ouptut_voltage = float(Output_voltage_text.get())
+    # Output_power = float(Output_power_text.get())
+    # Efficiency = float(Efficiency_text.get())
+    # Frequency = float(Frequency_text.get())
+    # B_ac = float(Flux_density_text.get())
+    # Regulation = float(Regulation_text.get())
+    # J = float(Current_density_text.get())
+    # Temperature_rise = float(Temperature_rise_goal_text.get())
+    # K_f = 4.44
+    # K_u = 0.4
+    # Bobbin_thickness = 1.5 
+    # insulation_thickness = 0.2 #mm
 
     # Rate_of_Cu = float(Rate_of_Cu_text.get())
     # Rate_of_Fe = float(Rate_of_Fe_text.get())
@@ -73,7 +73,7 @@ def task():
 
     Area_product = (Apparent_power*(10**4))/(K_f * K_u * B_ac * J * Frequency)
 
-    lamination_data = pd.read_csv('EI-Laminations.csv')
+    lamination_data = pd.read_csv('DATA/EI-Laminations.csv')
 
     # Input_current = Apparent_power / (Input_voltage * 0.01* Efficiency)
     Input_current = Output_power / Input_voltage
@@ -82,7 +82,7 @@ def task():
 
     A_wp_in_sqmm = A_wp * 100   # bare area in sqcm so convert it into sqmm
 
-    swg_data = pd.read_csv('EMD - Sheet1.csv') # select the swg the data 
+    swg_data = pd.read_csv('DATA/EMD - Sheet1.csv') # select the swg the data 
 
     higher_data = swg_data[A_wp_in_sqmm < swg_data['Normal Conductor Area mm²']]
 
