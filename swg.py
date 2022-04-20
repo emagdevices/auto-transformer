@@ -17,4 +17,4 @@ A_wp_sqmm = A_wp * 100
 
 if __name__ == '__main__':
     required_swg = findSWG(A_wp_sqmm)
-    print(required_swg)
+    print(required_swg) 
