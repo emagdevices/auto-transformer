@@ -90,7 +90,7 @@ def task():
 
     diameter_of_primary_wire_with_insulation = required_swg_primary['Medium Covering Max']
 
-    A_wp = required_swg_primary['Normal Conductor Area mm²'].max() / 100 # cm^2 
+    A_wp = required_swg_primary['Normal Conductor Area mm²'].max() / 100 # cm^2
 
     Secondary_current = Output_power / Ouptut_voltage
 
@@ -274,8 +274,6 @@ def task():
                         'MTL P': MTL_primary,
                         'MTL S': MTL_secondary,
                         # 'Tongue * Stack mm²':  selected_lamination['Tongue'].max() * stack,
-                        'psi cu': psi_copper,
-                        'psi fe': psi_core,
                         'Temperature rise Cu': Temperature_rise_Cu,
                         'Temperature rise Fe': Temperature_rise_Fe,
                         'Total Cu Cost': Wt_of_Cu_in_kg * Rate_of_Cu,
