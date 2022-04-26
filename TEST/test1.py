@@ -82,7 +82,7 @@ def task():
 
     A_wp_in_sqmm = A_wp * 100   # bare area in sqcm so convert it into sqmm
 
-    swg_data = pd.read_csv('EMD - Sheet1.csv') # select the swg the data 
+    swg_data = pd.read_csv('../DATA/EMD - Sheet1.csv') # select the swg the data 
 
     higher_data = swg_data[A_wp_in_sqmm < swg_data['Normal Conductor Area mm²']]
 
