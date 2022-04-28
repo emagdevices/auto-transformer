@@ -11,3 +11,4 @@ gui_example.py
 .ipynb_checkpoints/
 
 TEST/.ipynb_checkpoints
+TEST/__pycache__/
