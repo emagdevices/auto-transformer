@@ -6,6 +6,7 @@ from decimal import ROUND_DOWN, ROUND_UP
 import data 
 
 swg_data = data.swg_data
+lamination_data = data.lamination_data
 
 def area_product(K_f, K_u, B_ac, J, Frequency, apparent_power):
     """Input Arguments:
