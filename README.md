@@ -35,3 +35,26 @@ $$J=\dfrac{P_t (10^4)}{K_f K_u B_ac f A_p} $$
 
 $$A_p=\dfrac{P_t (10^4)}{K_f K_u B_ac f J} $$
 
+---
+## Project files
+
+
+<pre>
+.
+&#8866; README.md
+&#8866; DATA
+    &#8866; EI-Laminations.csv
+    &#8985; EMD - Sheet1.csv
+&#8866; FINAL
+    &#8866; DATA
+       &#8866; EI-Laminations.csv
+        &#8985; EMD - Sheet1.csv    
+    &#8866; data.py
+    &#8985; main.py
+&#8866; TEST
+&#8866; .gitignore
+&#8866; main.ipynb
+&#8866; main.py
+&#8866; requirements.txt
+&#8985; sop.txt
+</pre>
