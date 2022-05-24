@@ -37,7 +37,7 @@ def task():
     # B_ac = float(Flux_density_text.get())
     # Regulation = float(Regulation_text.get())
     # J = float(Current_density_text.get())
-    # Temperature_rise = float(Temperature_rise_goal_text.get())
+    # Temperature_rise '''= float(Temperature_rise_goal_text.get())
     # K_f = 4.44
     # K_u = 0.4
     # Bobbin_thickness = 1.5 
