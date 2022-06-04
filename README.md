@@ -78,3 +78,14 @@ For strip calculation
     s = [50, 55, 60 ... 445]
     t = [50, 55, .. ]
 
+
+For previous version single phase transformer we need to go for files in 
+
+<pre>
+
+&#8866; TEST
+    &#8866; BASIC
+        &#8866; Auto_transformer.ipynb
+        &#8866; main.ipynb
+        &#8866; main.py
+</pre>
