@@ -1,0 +1,11 @@
+###########################################
+For working on software 
+
+=> Download all the files into same folder (or Directory)
+
+=> run the gui.py file for the calculation of the lamination transformers
+
+=> python > 3.2 is needed to run the file
+
+=> packages needed for running are pandas, numpy, tkinter
+
