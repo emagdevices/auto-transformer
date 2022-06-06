@@ -11,7 +11,7 @@ spt = AutoTransformer()
 # Inputs for the function
 frequency = 50  # Hz
 temperature_rise_goal = 100  # celcius
-output_power = 40000  # watts
+output_power = 4000  # watts
 input_voltage = 230 # volts
 output_voltage = 230  # volts
 efficiency = 99  # %
@@ -220,7 +220,7 @@ for stack in range(95, 400, 5):
 final_result = pd.DataFrame(strip_data_result)
 
 # %%
-final_result
+final_result 
 
 # %%
 print(final_result.sort_values('Cost'))
