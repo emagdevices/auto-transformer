@@ -9,3 +9,29 @@ For working on software
 
 => packages needed for running are pandas, numpy, tkinter
 
+############################################
+
+*************** Grid Layout ****************
+
+we have taken basic "self.n" as 3 in order add any other button on top 
+
+so from 
+
+'self.n' to self.n + 10 => Input parameters
+
+self.n + 10 to self.n + 15 => lamination outputs 
+
+self.n + 15 to self.n + 35 => Strip outputs 
+
+********************************************
+
+=> for working on both laminaton and strip gui
+
+i have considered one condition that is bare area 
+
+=> Issue: Bare area cannot used to differentiate the 
+strip and lamination because, In lamination strip wires 
+can also be implemented
+
+=> So we need to get one condition to run either 
+lamination or strip algorithm
