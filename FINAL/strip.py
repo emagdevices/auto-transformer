@@ -10,13 +10,13 @@ spt = AutoTransformer()
 # %%
 # Inputs for the function
 frequency = 50  # Hz
-temperature_rise_goal = 100  # celcius
-output_power = 4000  # watts
+temperature_rise_goal = 200  # celcius
+output_power = 800  # watts
 input_voltage = 230 # volts
 output_voltage = 230  # volts
 efficiency = 99  # %
 regulation = 5
-b_ac = 1.25  # flux density
+b_ac = 1.35  # flux density
 current_density = 300  # amp/cm2
 Core_Loss_Factor = 1.5 
 bobbin_thickness = 1.5  # mm
@@ -220,9 +220,13 @@ for stack in range(95, 400, 5):
 final_result = pd.DataFrame(strip_data_result)
 
 # %%
-final_result 
+final_result
+print(final_result) 
 
 # %%
-print(final_result.sort_values('Cost'))
+if final_result.empty:
+    print(final_result)
+else:
+    print(final_result.sort_values('Cost'))
 
 

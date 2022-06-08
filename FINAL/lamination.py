@@ -9,15 +9,15 @@ spt = AutoTransformer()
 
 
 # Inputs for the function3 
-frequency = 47
+frequency = 50
 temperature_rise_goal = 200
-output_power = 1000
+output_power = 800
 input_voltage = 230
 output_voltage = 230
-efficiency = 95
+efficiency = 99
 regulation = 5
-b_ac = 1.45
-current_density = 300
+b_ac = 1.35
+current_density = 250
 
 # frequency = float(Frequency_text.get()) # 47  # Hz
 # temperature_rise_goal = float(Temperature_rise_goal_text.get()) #  200  # celcius

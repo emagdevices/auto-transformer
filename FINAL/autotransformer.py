@@ -60,7 +60,14 @@ class AutoTransformer:
     => cost
     =======================================================================================================
     """
-
+    @staticmethod
+    def calculate_bobbin_thicness(outputpower):
+        if outputpower < 1000:
+            return 1.5 # mm
+        elif outputpower < 10000:
+            return 3 # mm
+        else:
+            return 4 # mm
     @staticmethod
     def apparent_power(outputpower, efficiency):
         return outputpower * (1 / (0.01 * efficiency) + 1)
@@ -237,7 +244,8 @@ class AutoTransformer:
 
     @staticmethod
     def mtl_primary(tongue, stack, bobbin_thickness, built_primary):
-        return 2 * (tongue + stack + 2 * built_primary + 2 * bobbin_thickness) / 10  # cm
+        result = 2 * (tongue + stack + 2 * built_primary + 2 * bobbin_thickness) / 10  # cm
+        return math.ceil(result)
 
     @staticmethod
     def mtl_secondary(tongue,
@@ -254,7 +262,8 @@ class AutoTransformer:
         :param bobbin_thickness:
         :return: cm
         """
-        return 2 * (tongue + stack + 2 * built_primary + 2 * built_secondary + 2 * bobbin_thickness) / 10  # cm
+        result = 2 * (tongue + stack + 2 * built_primary + 2 * built_secondary + 2 * bobbin_thickness) / 10  # cm
+        return math.ceil(result)
 
     @staticmethod
     def length(mtl, number_of_turns):

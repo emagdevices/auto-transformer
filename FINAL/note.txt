@@ -35,3 +35,13 @@ can also be implemented
 
 => So we need to get one condition to run either 
 lamination or strip algorithm
+
+###############################################################
+
+outputs needed:
+
+-> wires 
+
+-> np, ns, total built
+
+-> core loss, copper loss
