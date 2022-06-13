@@ -142,35 +142,35 @@ class StripGUI:
         """
         self.n = self.n + 15
 
-        self.strip_I = Strip_Output(master, 1, self.n)
+        self.strip_I = Strip_Output(master, 1, self.n, self.data)
 
-        self.strip_II = Strip_Output(master, 2, self.n + 4)
+        self.strip_II = Strip_Output(master, 2, self.n + 4, self.data)
 
-        self.strip_III = Strip_Output(master, 3, self.n + 8)
+        self.strip_III = Strip_Output(master, 3, self.n + 8, self.data)
 
-        self.strip_IV = Strip_Output(master, 3, self.n + 12)
+        self.strip_IV = Strip_Output(master, 3, self.n + 12, self.data)
 
-        self.strip_V = Strip_Output(master, 5, self.n + 16)
+        self.strip_V = Strip_Output(master, 5, self.n + 16, self.data)
 
-        self.strip_VI = Strip_Output(master, 6, self.n + 20)
+        self.strip_VI = Strip_Output(master, 6, self.n + 20, self.data)
 
-        self.strip_VII = Strip_Output(master, 7, self.n + 24)
+        self.strip_VII = Strip_Output(master, 7, self.n + 24, self.data)
 
-        self.strip_VIII = Strip_Output(master, 8, self.n + 28)
+        self.strip_VIII = Strip_Output(master, 8, self.n + 28, self.data)
 
-        self.strip_IX = Strip_Output(master, 9, self.n + 32)
+        self.strip_IX = Strip_Output(master, 9, self.n + 32, self.data)
 
-        self.strip_X = Strip_Output(master, 10, self.n + 36)
+        self.strip_X = Strip_Output(master, 10, self.n + 36, self.data)
 
-        self.strip_XI = Strip_Output(master, 11, self.n + 40)
+        self.strip_XI = Strip_Output(master, 11, self.n + 40, self.data)
 
-        self.strip_XII = Strip_Output(master, 12, self.n + 44)
+        self.strip_XII = Strip_Output(master, 12, self.n + 44, self.data)
 
-        self.strip_XIII = Strip_Output(master, 13, self.n + 48)
+        self.strip_XIII = Strip_Output(master, 13, self.n + 48, self.data)
 
-        self.strip_XIV = Strip_Output(master, 14, self.n + 52)
+        self.strip_XIV = Strip_Output(master, 14, self.n + 52, self.data)
 
-        self.strip_XV = Strip_Output(master, 15, self.n + 56)
+        self.strip_XV = Strip_Output(master, 15, self.n + 56, self.data)
 
         """
         ================================================================
@@ -207,13 +207,13 @@ class StripGUI:
 
         # frequency = 50
         # temperature_rise_goal = 200
-        # output_power = 40000
+        # output_power = 10
         # input_voltage = 230
-        # output_voltage = 230
-        # efficiency = 99
+        # output_voltage = 10
+        # efficiency = 85
         # regulation = 5
         # b_ac = 1.25
-        # current_density = 300
+        # current_density = 250
         # Rate_of_Cu = 950
         # Rate_of_Fe = 250
 
@@ -254,7 +254,7 @@ class StripGUI:
 
         def strip_cost(stack, tongue, winding_width, winding_lenghth):
             
-            if stack < 2 * tongue:
+            if stack < 2 * tongue and stack > tongue * 0.5:
 
                 A_c = spt.core_area(stack, tongue)
 
@@ -352,23 +352,28 @@ class StripGUI:
                             'Tongue mm': tongue,
                             'wl mm': winding_lenghth,
                             'ww mm': winding_width,
-                            'Primary turns': Number_of_primary_turns,
-                            'Secondary turns': Number_of_secondary_turns,
-                            # 'Length primary': Length_primary,
-                            # 'Length secondary': Length_secondary,
-                            # 'Cu surface area': conductor_surface_area,
-                            # 'Core surface area': core_surface_area,
-                            # 'Weight of Fe': weight_of_core_kg,
-                            # 'Weight of Cu kg': Weight_of_copper_kg,
                             'Total Built': Total_Built,
                             'Core Loss': core_loss,
                             'Copper Loss': Total_Cu_loss,
                             'Temperature rise Cu': temperature_rise_copper,
                             'Temperature rise Fe': temperature_rise_core,
-                            # 'Fe Temperature rise': temperature_rise_core,
                             'Core weight': weight_of_core_kg,
                             'Conductor weight': Weight_of_copper_kg,
-                            'Cost': cost
+                            'Cost': cost,
+                            'Primary turns': Number_of_primary_turns,
+                            'Secondary turns': Number_of_secondary_turns,
+                            'MTL Primary': MTL_primary,
+                            'MTL Secondary': MTL_secondary,
+                            'TPL Primary': Turns_per_layer_primary,
+                            'TPL Secondary': Turns_per_layer_secondary,
+                            'Length primary': Length_primary,
+                            'Length secondary': Length_secondary,
+                            'Resistance primary': Primary_resistance,
+                            'Resistance secondary': Secondary_resistance,
+                            'Cu surface area': conductor_surface_area,
+                            'Core surface area': core_surface_area,
+                            'Weight of Cu kg': Weight_of_copper_kg,
+                            'Weight of Fe': weight_of_core_kg
                         }
 
                     return results_data 
@@ -404,8 +409,6 @@ class StripGUI:
                 'Tongue mm': [],
                 'wl mm': [],
                 'ww mm': [],
-                'Primary turns': [],
-                'Secondary turns': [],
                 'Total Built': [],
                 'Core Loss': [],
                 'Copper Loss': [],
@@ -413,8 +416,21 @@ class StripGUI:
                 'Temperature rise Fe': [],
                 'Core weight': [],
                 'Conductor weight': [],
-                'Cost': []
-
+                'Cost': [],
+                'Primary turns': [],
+                'Secondary turns': [],
+                'MTL Primary': [],
+                'MTL Secondary': [],
+                'TPL Primary': [],
+                'TPL Secondary': [],
+                'Length primary': [],
+                'Length secondary': [],
+                'Resistance primary': [],
+                'Resistance secondary': [],
+                'Cu surface area': [],
+                'Core surface area': [],
+                'Weight of Cu kg': [],
+                'Weight of Fe': []
             })
         else:
             final_result = final_result.sort_values('Cost')
@@ -525,7 +541,9 @@ class StripGUI:
 
                 stack = spt.calculate_stack(present_area_product, selected_lamination['K-ratio'].max())
 
-                if stack < 2 * tongue:
+                print(f'lamination: {lamination} >> area product: {present_area_product} >> stack: {stack} >> tongue: {tongue}')
+
+                if stack < 2 * tongue and stack > tongue * 0.5:
 
                     stack = spt.rounding_stack_as_multiple_of_five(stack)  # mm 
 
@@ -615,9 +633,10 @@ class StripGUI:
 
                         if (temperature_rise_copper < temperature_rise_goal) and (temperature_rise_core < temperature_rise_goal):
                             results_data = {
-                                'x %': x,
+                                # 'x %': x,
                                 'Lamination': selected_lamination['Type'].max(),
-                                'Area product': present_area_product,
+                                # 'Area product': present_area_product,
+                                'Type': 'Lamination',
                                 'Primary wire': required_strip_primary['combination'].min(),
                                 'width primary': width_primary,
                                 'height primary': height_priamry,
@@ -626,26 +645,78 @@ class StripGUI:
                                 'height secondary': height_secondary,
                                 'Stack mm': stack,
                                 'Tongue mm': tongue,
-                                'ww mm': ww,
                                 'wl mm': wl,
-                                'Primary turns': Number_of_primary_turns,
-                                'Secondary turns': Number_of_secondary_turns,
+                                'ww mm': ww,
                                 'Total Built': Total_Built,
-                                'Cu surface area': conductor_surface_area,
-                                'Core surface area': core_surface_area,
                                 'Core Loss': core_loss,
                                 'Copper Loss': Total_Cu_loss,
-                                'Total Cu Cost': Weight_of_copper_kg * Rate_of_Cu,
-                                'Total Fe Cost': weight_of_core_kg * Rate_of_Fe,
+                                # 'Total Cu Cost': Weight_of_copper_kg * Rate_of_Cu,
+                                # 'Total Fe Cost': weight_of_core_kg * Rate_of_Fe,
                                 'Temperature rise Cu': temperature_rise_copper,
                                 'Temperature rise Fe': temperature_rise_core,
                                 'Core weight': weight_of_core_kg,
                                 'Conductor weight': Weight_of_copper_kg,
-                                'Cost': cost
+                                'Cost': cost,
+                                'Primary turns': Number_of_primary_turns,
+                                'Secondary turns': Number_of_secondary_turns,
+                                'MTL Primary': MTL_primary,
+                                'MTL Secondary': MTL_secondary,
+                                'TPL Primary': Turns_per_layer_primary,
+                                'TPL Secondary': Turns_per_layer_secondary,
+                                'Length primary': Length_primary,
+                                'Length secondary': Length_secondary,
+                                'Resistance primary': Primary_resistance,
+                                'Resistance secondary': Secondary_resistance,
+                                'Cu surface area': conductor_surface_area,
+                                'Core surface area': core_surface_area,
+                                'Weight of Cu kg': Weight_of_copper_kg,
+                                'Weight of Fe': weight_of_core_kg
                             }
                             stack_data.append(results_data)
 
         df = pd.DataFrame(stack_data)
+        if df.empty:
+            df = pd.DataFrame({
+                'Lamination': [],
+                'Type': [],
+                'Primary wire': [],
+                'width primary': [],
+                'height primary': [],
+                'Secondary wire': [],
+                'width secondary': [],
+                'height secondary': [],
+                'Stack mm': [],
+                'Tongue mm': [],
+                'wl mm': [],
+                'ww mm': [],
+                'Total Built': [],
+                'Core Loss': [],
+                'Copper Loss': [],
+                'Temperature rise Cu': [],
+                'Temperature rise Fe': [],
+                'Core weight': [],
+                'Conductor weight': [],
+                'Cost': [],
+                'Primary turns': [],
+                'Secondary turns': [],
+                'MTL Primary': [],
+                'MTL Secondary': [],
+                'TPL Primary': [],
+                'TPL Secondary': [],
+                'Length primary': [],
+                'Length secondary': [],
+                'Resistance primary': [],
+                'Resistance secondary': [],
+                'Cu surface area': [],
+                'Core surface area': [],
+                'Weight of Cu kg': [],
+                'Weight of Fe': []
+            })
+
+        print(df)
+
+        top = df.sort_values('Cost').groupby('Lamination').first().sort_values('Cost')
+
 
         top_3 = []
         for single_lamination in df['Lamination'].unique():
@@ -666,8 +737,6 @@ class StripGUI:
                 'Tongue mm': d_min_cost['Tongue mm'].min(),
                 'wl mm': d_min_cost['wl mm'].min(),
                 'ww mm': d_min_cost['ww mm'].min(),
-                'Primary turns': d_min_cost['Primary turns'].min(),
-                'Secondary turns': d_min_cost['Secondary turns'].min(),
                 'Total Built': d_min_cost['Total Built'].min(),
                 'Core Loss': d_min_cost['Core Loss'].min(),
                 'Copper Loss': d_min_cost['Copper Loss'].min(),
@@ -677,7 +746,58 @@ class StripGUI:
                 # 'Total Fe Cost': d_min_cost['Total Fe Cost'].min(),
                 'Core weight': d_min_cost['Core weight'].min(),
                 'Conductor weight': d_min_cost['Conductor weight'].min(),
-                'Cost': d_min_cost['Cost'].min()
+                'Cost': d_min_cost['Cost'].min(),
+                'Primary turns': d_min_cost['Primary turns'].min(),
+                'Secondary turns': d_min_cost['Secondary turns'].min(),
+                'MTL Primary': d_min_cost['MTL Primary'].min(),
+                'MTL Secondary': d_min_cost['MTL Secondary'].min(),
+                'TPL Primary': d_min_cost['TPL Primary'].min(),
+                'TPL Secondary': d_min_cost['TPL Secondary'].min(),
+                'Length primary': d_min_cost['Length primary'].min(),
+                'Length secondary': d_min_cost['Length secondary'].min(),
+                'Resistance primary': d_min_cost['Resistance primary'].min(),
+                'Resistance secondary': d_min_cost['Resistance secondary'].min(),
+                'Cu surface area': d_min_cost['Cu surface area'].min(),
+                'Core surface area': d_min_cost['Core surface area'].min(),
+                'Weight of Cu kg': d_min_cost['Weight of Cu kg'].min(),
+                'Weight of Fe': d_min_cost['Weight of Fe'].min()
+            })
+        if len(top_3) == 0:
+            top_3 = pd.DataFrame({
+                'Lamination': [],
+                'Type': [],
+                'Primary wire': [],
+                'width primary': [],
+                'height primary': [],
+                'Secondary wire': [],
+                'width secondary': [],
+                'height secondary': [],
+                'Stack mm': [],
+                'Tongue mm': [],
+                'wl mm': [],
+                'ww mm': [],
+                'Total Built': [],
+                'Core Loss': [],
+                'Copper Loss': [],
+                'Temperature rise Cu': [],
+                'Temperature rise Fe': [],
+                'Core weight': [],
+                'Conductor weight': [],
+                'Cost': [],
+                'Primary turns': [],
+                'Secondary turns': [],
+                'MTL Primary': [],
+                'MTL Secondary': [],
+                'TPL Primary': [],
+                'TPL Secondary': [],
+                'Length primary': [],
+                'Length secondary': [],
+                'Resistance primary': [],
+                'Resistance secondary': [],
+                'Cu surface area': [],
+                'Core surface area': [],
+                'Weight of Cu kg': [],
+                'Weight of Fe': []
             })
 
         result = pd.DataFrame(top_3).sort_values('Cost')
@@ -685,14 +805,22 @@ class StripGUI:
         top_3_sorted = result
         return top_3_sorted
 
+    def data(self):
+        data = pd.read_csv('/home/yash7/Desktop/EMD/auto-transformer/FINAL/results.csv')
+        print(data)
+        pass 
 
     def both(self):
         df1 = self.lamination()
         # print(df1)
         df2 = self.strip()
         results = pd.concat([df1, df2])
+        # results = df2 
         print(results)
         print(results.columns)
+        # print(results['Total Built'])
+
+        results.to_csv('/home/yash7/Desktop/EMD/auto-transformer/FINAL/results.csv')
 
         pw = results['Primary wire'][0:1].min()
         self.primary_wire.label_result.delete(0, END)
@@ -721,7 +849,7 @@ class StripGUI:
             GetTypeData(strip, results[0+n:1+n])
             n = n + 1
 
-
+  
 
 
 class Input_Label:
@@ -772,15 +900,63 @@ class Strip_Output:
     To simplify the strip outputs table so that the we can simply create as many
     we need. Also it helps in shortening the code.
     """
-    def __init__(self, master, strip_number, Row):
+    def __init__(self, master, strip_number, Row, cmd):
+        self.strip_number = strip_number
         self.type = Output_Label(master, 'Type', Row, 0) 
         self.stackStrip = Output_Label(master, 'Stack mm', Row, 1)
         self.tongueStrip = Output_Label(master, 'Tongue mm', Row, 2)
-        self.wwStrip = Output_Label(master, 'Winding Width mm', Row, 3)
-        self.wlStrip = Output_Label(master, 'Winding Length mm', Row, 4)
-        self.cuTempStrip = Output_Label(master, 'Cu Temperature rise', Row, 5)
-        self.feTempStrip = Output_Label(master, 'Fe Temperature rise', Row, 6)
-        self.cost = Output_Label(master, 'Cost Rs', Row, 7) 
+        self.wlStrip = Output_Label(master, 'Winding Length mm', Row, 3)
+        self.wwStrip = Output_Label(master, 'Winding Width mm', Row, 4)
+        self.built = Output_Label(master, 'Total Built', Row, 5)
+        self.cuTempStrip = Output_Label(master, 'Cu Temperature rise', Row, 6)
+        self.feTempStrip = Output_Label(master, 'Fe Temperature rise', Row, 7)
+        self.cost = Output_Label(master, 'Cost Rs', Row, 8)
+        # data button for strip output
+
+        
+        self.data = Button(master, text="Data", command=self.disableButton)
+        self.data.grid(row=Row, column=10)
+
+    def disableButton(self):
+        data = pd.read_csv('/home/yash7/Desktop/EMD/auto-transformer/FINAL/results.csv')
+        # if n = 1  i.e, strip_number 1
+        n = self.strip_number - 1
+        # now n = 0 then it can be applied to data[n : n+ 1] => data[0:1]
+        data = data[n:n+1]
+        print(data.columns)
+        popup = Tk()
+        popup.title(f'Data of {self.strip_number}')
+        # popup.grab_set()
+        primary_wire = Input_Label(popup, 'Primary wire', 0, 4)
+        width_primary = Input_Label(popup, 'Primary width', 1, 4)
+        height_primary = Input_Label(popup, 'Primary height', 2, 4)
+        GetData(primary_wire, data['Primary wire'].min())
+        GetData(width_primary, data['width primary'].min())
+        GetData(height_primary, data['height primary'].min())
+        secondary_wire = Input_Label(popup, 'Secondary', 0, 6)
+        width_secondary = Input_Label(popup, 'Secondary width', 1, 6)
+        height_secondary = Input_Label(popup, 'Secondary height', 2, 6)
+        GetData(secondary_wire, data['Secondary wire'].min())
+        GetData(width_secondary, data['width secondary'].min())
+        GetData(height_secondary, data['height secondary'].min())
+
+        # currents
+        Row = 10
+        # primary_current = Input_Label(popup, 'Primary current', Row, 3)
+        # primary_voltage = Input_Label(popup, 'Primary voltage', Row, 5)
+        # primary_power = Input_Label(popup, 'Primary Power', Row, 7)
+
+        # secondary_current = Input_Label(popup, 'Srimary current', Row + 1, 3)
+        # secondary_voltage = Input_Label(popup, 'Srimary voltage', Row + 1, 5)
+        # secondary_power = Input_Label(popup, 'Srimary Power', Row + 1, 7)
+        # print(data[n: n+1])
+        print(data['Cost'])
+        pass 
+
+class GetData:
+    def __init__(self, parameter, data):
+        parameter.label_result.delete(0, END)
+        parameter.label_result.insert(0, f'{data}')
 
 class GetParameterData:
     def __init__(self, stripArray, ParameterColumn):
@@ -843,6 +1019,10 @@ class GetTypeData:
         cost = round(cost , 2)
         stripArray.cost.label_result.delete(0, END)
         stripArray.cost.label_result.insert(0, f'{cost}') 
+
+        built = ParameterRow['Total Built'].min()
+        stripArray.built.label_result.delete(0, END)
+        stripArray.built.label_result.insert(0, f'{built}')
 
 class GetDataToLabel:
     def __init__(self, location, data):

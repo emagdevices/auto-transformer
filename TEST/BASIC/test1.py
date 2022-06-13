@@ -16,11 +16,11 @@ OPTIONS = [
 
 def task():
     Frequency = 50 # Hz
-    Temperature_rise_goal = 80 # degree Celcius
-    Output_power = 2000 # watts
-    Efficiency = 96 # %
+    Temperature_rise_goal = 200 # degree Celcius
+    Output_power = 10 # watts
+    Efficiency = 85 # %
     Input_voltage = 230 # volts
-    Ouptut_voltage = 230 # volts
+    Ouptut_voltage = 10 # volts
     Regulation = 4 # in a scale of 100
     Bobbin_thickness = 1.5 
     K_f = 4.44
@@ -63,6 +63,7 @@ def task():
         Resistivity_conductor = 2.65 * 10**-6 # ohm cm
 
     Resistivity_Cu = Resistivity_conductor
+    print(Resistivity_conductor)
 
     Rate_of_Cu = 950 # Rs / Kg
     Rate_of_Fe = 250 # Rs / Kg
@@ -73,7 +74,7 @@ def task():
 
     Area_product = (Apparent_power*(10**4))/(K_f * K_u * B_ac * J * Frequency)
 
-    lamination_data = pd.read_csv('../DATA/EI-Laminations.csv')
+    lamination_data = pd.read_csv('DATA/EI-Laminations.csv')
 
     # Input_current = Apparent_power / (Input_voltage * 0.01* Efficiency)
     Input_current = Output_power / Input_voltage
@@ -82,7 +83,7 @@ def task():
 
     A_wp_in_sqmm = A_wp * 100   # bare area in sqcm so convert it into sqmm
 
-    swg_data = pd.read_csv('../DATA/EMD - Sheet1.csv') # select the swg the data 
+    swg_data = pd.read_csv('DATA/EMD - Sheet1.csv') # select the swg the data 
 
     higher_data = swg_data[A_wp_in_sqmm < swg_data['Normal Conductor Area mm²']]
 
