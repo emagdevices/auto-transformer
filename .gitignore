@@ -1,0 +1,11 @@
+.idea
+
+/__pycache__
+
+
+.ipynb_checkpoints/
+
+TEST/.ipynb_checkpoints
+TEST/__pycache__/
+
+FINAL/__pycache__

@@ -838,7 +838,7 @@ class StripGUI:
         return result
     
     def data(self):
-        data = pd.read_csv('/home/yash7/Desktop/EMD/auto-transformer/FINAL/results.csv')
+        data = pd.read_csv('results.csv')
 
 
     def both(self):
@@ -849,7 +849,7 @@ class StripGUI:
         print(results)
         print(results.columns)
 
-        results.to_csv('/home/yash7/Desktop/EMD/auto-transformer/FINAL/results.csv')
+        results.to_csv('results.csv')
 
         pw = results['Primary wire'][0:1].min()
         self.primary_wire.label_result.delete(0, END)
@@ -947,7 +947,7 @@ class Strip_Output:
         self.data.grid(row=Row, column=10)
 
     def disableButton(self):
-        data = pd.read_csv('/home/yash7/Desktop/EMD/auto-transformer/FINAL/results.csv')
+        data = pd.read_csv('results.csv')
         # if n = 1  i.e, strip_number 1
         n = self.strip_number - 1
         # now n = 0 then it can be applied to data[n : n+ 1] => data[0:1]
@@ -975,10 +975,16 @@ class Strip_Output:
         primary_current = Input_Label(popup, 'Primary current', Row, 3)
         primary_voltage = Input_Label(popup, 'Primary voltage', Row, 5)
         primary_power = Input_Label(popup, 'Primary Power', Row, 7)
+        GetData(primary_current, data['Primary current'].min())
+        GetData(primary_voltage, data['Primary voltage'].min())
+        GetData(primary_power, data['Primary power'].min())
 
         secondary_current = Input_Label(popup, 'Secondary current', Row + 1, 3)
         secondary_voltage = Input_Label(popup, 'Secondary voltage', Row + 1, 5)
         secondary_power = Input_Label(popup, 'Secondary Power', Row + 1, 7)
+        GetData(secondary_current, data['Secondary current'].min())
+        GetData(secondary_voltage, data['Secondary voltage'].min())
+        GetData(secondary_power, data['Secondary power'].min())
         # print(data[n: n+1])
         print(data['Cost'])
         
@@ -997,7 +1003,41 @@ class Strip_Output:
         GetData(tongue, data['Tongue mm'].min())
         GetData(ww, data['ww mm'].min())
         GetData(wl, data['wl mm'].min())
+        """
+        ============================================================
+                              Wire parameters
+        ============================================================
+        """
+        Row = Row + 2
+        primary_turns = Output_Label(popup, 'Primary turns', Row, Column)
+        primary_mtl = Output_Label(popup, 'MTL Primary',Row, Column + 1)
+        primary_tpl = Output_Label(popup, 'TPL Primary', Row, Column + 2)
+        primary_length = Output_Label(popup, 'Length Primary', Row+2, Column)
+        primary_resistance = Output_Label(popup, 'Resistance primary', Row+2, Column + 1)
+        GetData(primary_turns, data['Primary turns'].min())
+        GetData(primary_mtl, data['MTL Primary'].min())
+        GetData(primary_tpl, data['TPL Primary'].min())
+        GetData(primary_length, data['Length primary'].min())
+        GetData(primary_resistance, data['Resistance primary'].min())
 
+        Column = Column + 3
+        secondary_turns = Output_Label(popup, 'Secondary turns', Row, Column)
+        secondary_mtl = Output_Label(popup, 'MTL Secondary',Row, Column + 1)
+        secondary_tpl = Output_Label(popup, 'TPL Secondary', Row, Column + 2)
+        secondary_length = Output_Label(popup, 'Length Secondary', Row+2, Column)
+        secondary_resistance = Output_Label(popup, 'Resistance Secondary', Row+2, Column + 1)
+        GetData(secondary_turns, data['Secondary turns'].min())
+        GetData(secondary_mtl, data['MTL Secondary'].min())
+        GetData(secondary_tpl, data['TPL Secondary'].min())
+        GetData(secondary_length, data['Length secondary'].min())
+        GetData(secondary_resistance, data['Resistance secondary'].min())
+        """
+        ============================================================
+                              Wire parameters
+        ============================================================
+        """
+        Column = Column - 3
+        Row = Row + 3
         
         pass 
 

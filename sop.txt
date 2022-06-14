@@ -1,0 +1,7 @@
+Keep the optimize.py and data files like ("EI-Laminations.csv", "EMD - Sheet1.csv")
+
+install python & pip
+
+install dependices using command "python install -r requirements.txt"
+
+run the program optimize.py command "python optimize.py"
